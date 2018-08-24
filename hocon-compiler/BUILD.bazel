@@ -1,0 +1,14 @@
+load("@rules_scala_annex//rules:scala.bzl", scala_binary = "annex_scala_binary")
+
+scala_binary(
+    name = "hocon-compiler",
+    srcs = glob(["src/**/*.scala"]),
+    visibility = ["//visibility:public"],
+    scalacopts = ["-Ywarn-unused-import", "-Xfatal-warnings"],
+    main_class = "ruleshocon.Compiler",
+    deps = [
+        "@com_github_scopt_scopt_2_11",
+        "@com_typesafe_config",
+    ]
+)
+
