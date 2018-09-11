@@ -10,7 +10,7 @@ scala_binary(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@com_typesafe_config//jar",
-        "@org_rogach_scallop_2_11//jar",
+        "@hocon_com_typesafe_config//jar",
+        "@hocon_org_rogach_scallop_2_11//jar",
     ],
 )
