@@ -7,8 +7,8 @@ scala_binary(
     scalacopts = ["-Ywarn-unused-import", "-Xfatal-warnings"],
     main_class = "ruleshocon.Compiler",
     deps = [
-        "@org_rogach_scallop_2_11",
-        "@com_typesafe_config",
+        "@org_rogach_scallop_2_11//jar",
+        "@com_typesafe_config//jar"
     ]
 )
 
