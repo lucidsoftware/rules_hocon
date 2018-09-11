@@ -8,7 +8,7 @@ package ruleshocon
  * keys that are set, and the compiler will fail unless keys are available for
  * *all* environments.
  */
-class ResolveLists private (roles: Map[String, Set[String]]) {
+class ResolveLists(roles: Map[String, Set[String]]) {
   def validKeys: Set[String] = roles.valuesIterator.reduceOption(_ & _).getOrElse(Set.empty)
 
   def isEmpty: Boolean = roles.isEmpty
@@ -24,10 +24,4 @@ class ResolveLists private (roles: Map[String, Set[String]]) {
   def +(pair: (String, Set[String])): ResolveLists = {
     new ResolveLists(roles + pair)
   }
-
-  def ++(other: TraversableOnce[(String, Set[String])]) = new ResolveLists(roles ++ other)
-}
-
-object ResolveLists {
-  val empty = new ResolveLists(Map.empty)
 }

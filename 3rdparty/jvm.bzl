@@ -3,27 +3,6 @@ def list_dependencies():
     return [
         {
             "bind_args": {
-                "actual": "@com_github_scopt_scopt_2_11",
-                "name": "jar/com/github/scopt/scopt_2_11"
-            },
-            "import_args": {
-                "default_visibility": [ "//visibility:public" ],
-                "deps": [ "@scala_scala_library//jar" ],
-                "jar_sha256": "cc05b6ac379f9b45b6d832b7be556312039f3d57928b62190d3dcd04f34470b5",
-                "jar_urls": [
-                    "https://oss.sonatype.org/content/repositories/releases/com/github/scopt/scopt_2.11/3.7.0/scopt_2.11-3.7.0.jar"
-                ],
-                "licenses": [ "notice" ],
-                "name": "com_github_scopt_scopt_2_11",
-                "srcjar_sha256": "1c9111bafb55ec192d04898123199e51440e1633118b112d0c14a611491805ef",
-                "srcjar_urls": [
-                    "https://oss.sonatype.org/content/repositories/releases/com/github/scopt/scopt_2.11/3.7.0/scopt_2.11-3.7.0-sources.jar"
-                ]
-            },
-            "lang": "scala"
-        },
-        {
-            "bind_args": {
                 "actual": "@com_typesafe_config",
                 "name": "jar/com/typesafe/config"
             },
@@ -41,6 +20,27 @@ def list_dependencies():
                 ]
             },
             "lang": "java"
+        },
+        {
+            "bind_args": {
+                "actual": "@org_rogach_scallop_2_11",
+                "name": "jar/org/rogach/scallop_2_11"
+            },
+            "import_args": {
+                "default_visibility": [ "//visibility:public" ],
+                "deps": [ "@scala_scala_library//jar" ],
+                "jar_sha256": "ed860257bd1aa8120b35c7e03b3ba5764dbf4b7d96267bc0c145500245fee3c0",
+                "jar_urls": [
+                    "https://oss.sonatype.org/content/repositories/releases/org/rogach/scallop_2.11/3.1.3/scallop_2.11-3.1.3.jar"
+                ],
+                "licenses": [ "notice" ],
+                "name": "org_rogach_scallop_2_11",
+                "srcjar_sha256": "e471198a7330a86535a3cc603da3b80889c377782d8d7aa4b72385a40752f651",
+                "srcjar_urls": [
+                    "https://oss.sonatype.org/content/repositories/releases/org/rogach/scallop_2.11/3.1.3/scallop_2.11-3.1.3-sources.jar"
+                ]
+            },
+            "lang": "scala"
         }
     ]
     

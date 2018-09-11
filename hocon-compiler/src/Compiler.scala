@@ -4,50 +4,25 @@ import java.io.{File, FileWriter}
 import scala.io.Source
 import scala.util.control.NonFatal
 import com.typesafe.config._
+import org.rogach.scallop._
 
 object Compiler {
-  case class CommandOpts(
-    src: File,
-    output: File,
-    base: Option[File] = None,
-    includes: Seq[File] = Seq.empty,
-    resolveLists: ResolveLists = ResolveLists.empty,
-    optionalIncludes: Set[String] = Set.empty,
-    header: String = ""
-  )
-
-
-  private val parser = new scopt.OptionParser[CommandOpts]("hocon-compiler") {
-    head("Hocon compiler and flattener", "0.1")
-    arg[File]("<output>").required().action { (value, config) =>
-      config.copy(output = value)
-    }
-    arg[File]("<src>").required().action { (value, config) =>
-      config.copy(src = value)
-    }
-
-    opt[File]('b', "base").maxOccurs(1).optional().action { (value, config) =>
-      config.copy(base = Some(value))
-    }
-
-    opt[Seq[File]]('i', "include").valueName("<conf_include>").unbounded().action { (value, config) =>
-      config.copy(includes = config.includes ++ value)
-    }.text("Files to add to the include path for config generation")
-
-    opt[Seq[File]]('m', "env-key-list").unbounded().action { (value, config) =>
-      val resolveLists = value.map { file =>
+  class CommandOpts(arguments: Seq[String]) extends ScallopConf(arguments, List("hocon-compiler")) {
+    banner("Hocon compiler and flattener")
+    val base = opt[File]()
+    val output = opt[File](required = true)
+    val include = opt[List[File]](default = Some(Nil))
+    val resolveLists = opt[List[File]]("env-key-lists", default = Some(Nil)).map { files =>
+      new ResolveLists(files.iterator.map { file =>
         file.getName -> readResolveList(file)
-      }
-      config.copy(resolveLists = config.resolveLists ++ resolveLists)
+      }.toMap)
     }
+    val optionalInclude = opt[List[String]](short='D', default = Some(Nil)).map(_.toSet)
+    val header = opt[String](default = Some(""))
 
-    opt[Seq[String]]('D', "optional-include").unbounded().action { (value, config) =>
-      config.copy(optionalIncludes = config.optionalIncludes ++ value)
-    }
+    val src = trailArg[File]()
 
-    opt[String]('H', "header").maxOccurs(1).optional().action { (value, config) =>
-      config.copy(header = value)
-    }
+    verify()
   }
 
   private val renderOptions = ConfigRenderOptions.defaults()
@@ -55,19 +30,17 @@ object Compiler {
     .setJson(false)
 
   final def main(args: Array[String]): Unit = {
-    val opts = parser.parse(args, CommandOpts(null, null)).getOrElse {
-      return System.exit(1)
-    }
+    val opts = new CommandOpts(args)
 
     try {
-      val configParser = new ConfigParser(opts.includes, opts.optionalIncludes)
-      val baseConfig = opts.base.map(configParser.parse)
-      val mainConfig = configParser.parse(opts.src)
+      val configParser = new ConfigParser(opts.include(), opts.optionalInclude())
+      val baseConfig = opts.base.toOption.map(configParser.parse)
+      val mainConfig = configParser.parse(opts.src())
       val merged = baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base)).getOrElse(mainConfig)
 
-      checkResolution(merged, opts.resolveLists)
+      checkResolution(merged, opts.resolveLists())
 
-      writeConfig(merged, opts.output, opts.header)
+      writeConfig(merged, opts.output(), opts.header())
     } catch {
       case NonFatal(e) =>
         printError(e.toString)

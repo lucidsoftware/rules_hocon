@@ -12,21 +12,23 @@ lucidBag refer to keys that are available for the applicable IAM roles
 def _hocon_library_impl(ctx):
     all_inputs = [ctx.file.src]
     args = ctx.actions.args()
-    args.add(ctx.outputs.out)
-    args.add(ctx.file.src)
+    args.add("-o", ctx.outputs.out)
     if ctx.file.base:
         args.add("-b", ctx.file.base)
         all_inputs.append(ctx.file.base)
-    args.add_joined("-i", ctx.files.deps, join_with = ",", omit_if_empty=True)
+    args.add_all("-i", ctx.files.deps, omit_if_empty=True)
     all_inputs.extend(ctx.files.deps)
 
-    args.add_joined("-m", ctx.files.env_key_lists, join_with = ",", omit_if_empty=True)
+    args.add_all("-e", ctx.files.env_key_lists, omit_if_empty=True)
     all_inputs.extend(ctx.files.env_key_lists)
 
     if ctx.attr.header:
-        args.add("-H", ctx.attr.header)
+        args.add("-h", ctx.attr.header)
 
-    args.add_joined("-D", ctx.attr.optional_includes, join_with = ",", omit_if_empty=True)
+    args.add_all("-D", ctx.attr.optional_includes, omit_if_empty=True, uniquify=True)
+    args.add(ctx.file.src)
+
+    args.use_param_file("@%s")
 
     ctx.actions.run(
         executable = ctx.executable._hocon_compiler,
