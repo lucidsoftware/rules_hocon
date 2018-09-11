@@ -2,8 +2,9 @@
 
 Bazel rules for compiling multiple HOCON source files into a flattend HOCON artifact.
 
-In addition to checking syntax and flattening the configuration files, it also verifies that any references to
-lucidBag refer to keys that are available for the applicable IAM roles
+In addition to checking syntax and flattening the configuration files, it also verifies that
+any references (`${}` syntax) either refer to internal config, or keys from a whitelist of
+config that will provided at runtime.
 
 [HOCON](https://github.com/lightbend/config)
 
