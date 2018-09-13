@@ -1,0 +1,16 @@
+load("@rules_scala_annex//rules:scala.bzl", scala_binary = "annex_scala_binary")
+
+scala_binary(
+    name = "hocon-compiler",
+    srcs = glob(["src/**/*.scala"]),
+    main_class = "ruleshocon.Compiler",
+    scalacopts = [
+        "-Ywarn-unused-import",
+        "-Xfatal-warnings",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@hocon_com_typesafe_config//jar",
+        "@hocon_org_rogach_scallop_2_11//jar",
+    ],
+)

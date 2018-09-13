@@ -1,0 +1,16 @@
+build --define=scala_deps_direct=error
+build --define=scala_deps_used=error
+
+build --experimental_strict_action_env
+test --experimental_strict_action_env
+
+build --strategy=ScalaCompile=worker
+build --strategy=ScalaCheckDeps=worker
+build --strategy=ScalaFmt=worker
+test --strategy=ScalaCompile=worker
+test --strategy=ScalaCheckDeps=worker
+test --strategy=ScalaFmt=worker
+
+build --python_path=/usr/bin/python3
+run --python_path=/usr/bin/python3
+test --python_path=/usr/bin/python3
