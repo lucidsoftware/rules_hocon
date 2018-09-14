@@ -3,6 +3,7 @@ load("@rules_scala_annex//rules:scala.bzl", scala_binary = "annex_scala_binary")
 scala_binary(
     name = "hocon-compiler",
     srcs = glob(["src/**/*.scala"]),
+    jvm_flags = ["-Dfile.encoding=UTF-8"],
     main_class = "ruleshocon.Compiler",
     scalacopts = [
         "-Ywarn-unused-import",
