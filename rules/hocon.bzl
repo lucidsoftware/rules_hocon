@@ -9,6 +9,15 @@ config that will provided at runtime.
 [HOCON](https://github.com/lightbend/config)
 
 """
+PROPAGATABLE_TAGS = ["no-remote", "no-cache", "no-sandbox", "no-remote-exec", "no-remote-cache"]
+
+def resolve_execution_reqs(ctx, base_exec_reqs):
+    exec_reqs = {}
+    for tag in ctx.attr.tags:
+        if tag in PROPAGATABLE_TAGS:
+            exec_reqs.update({tag: "1"})
+    exec_reqs.update(base_exec_reqs)
+    return exec_reqs
 
 def _hocon_library_impl(ctx):
     all_inputs = [ctx.file.src]
@@ -34,6 +43,7 @@ def _hocon_library_impl(ctx):
     ctx.actions.run(
         executable = ctx.executable._hocon_compiler,
         progress_message = "Compiling hocon config (%s)" % ctx.label.name,
+        execution_requirements = resolve_execution_reqs(ctx, {}),
         inputs = all_inputs,
         arguments = [args],
         outputs = [ctx.outputs.out],
