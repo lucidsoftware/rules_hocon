@@ -1,14 +1,16 @@
+load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
+
 def hocon_repositories():
-    native.maven_jar(
+    jvm_maven_import_external(
         name = "hocon_com_typesafe_config",
         artifact = "com.typesafe:config:1.3.3",
-        sha1 = "4b68c2d5d0403bb4015520fcfabc88d0cbc4d117",
-        sha1_src = "c7af5bd41815a5edc8e7a81082e88fe18f9729e0",
+        artifact_sha256 = "b5f1d6071f1548d05be82f59f9039c7d37a1787bd8e3c677e31ee275af4a4621",
+        server_urls = ["https://repo.maven.apache.org/maven2"],
     )
 
-    native.maven_jar(
+    jvm_maven_import_external(
         name = "hocon_org_rogach_scallop_2_11",
         artifact = "org.rogach:scallop_2.11:3.1.3",
-        sha1 = "5cd8166a3ca2b78fc7e2ceafc0616c756b9edeee",
-        sha1_src = "914a1f1d8fcb0d811c4fba8d2ab0e07f53694181",
+        artifact_sha256 = "ed860257bd1aa8120b35c7e03b3ba5764dbf4b7d96267bc0c145500245fee3c0",
+        server_urls = ["https://repo.maven.apache.org/maven2"],
     )

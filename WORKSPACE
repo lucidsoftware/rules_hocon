@@ -1,53 +1,130 @@
-workspace(name = "com_lucidchart_rules_hocon")
+workspace(name = "io_bazel_rules_hocon")
 
-skylib_version = "8cecf885c8bf4c51e82fd6b50b9dd68d2c98f757"
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+bazel_skylib_tag = "1.0.2"
+
+bazel_skylib_sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44"
+
 http_archive(
     name = "bazel_skylib",
-    sha256 = "d54e5372d784ceb365f7d38c3dad7773f73b3b8ebc8fb90d58435a92b6a20256",
-    strip_prefix = "bazel-skylib-{}".format(skylib_version),
-    type = "zip",
-    url = "https://github.com/bazelbuild/bazel-skylib/archive/{}.zip".format(skylib_version),
+    sha256 = bazel_skylib_sha256,
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/{tag}/bazel-skylib-{tag}.tar.gz".format(tag = bazel_skylib_tag),
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/{tag}/bazel-skylib-{tag}.tar.gz".format(tag = bazel_skylib_tag),
+    ],
 )
 
-protobuf_version = "0038ff49af882463c2af9049356eed7df45c3e8e"
+protobuf_tag = "3.10.1"
+
+protobuf_sha256 = "678d91d8a939a1ef9cb268e1f20c14cd55e40361dc397bb5881e4e1e532679b1"
+
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "2c8f8614fb1be709d68abaab6b4791682aa7db2048012dd4642d3a50b4f67cb3",
-    strip_prefix = "protobuf-{}".format(protobuf_version),
+    sha256 = protobuf_sha256,
+    strip_prefix = "protobuf-{}".format(protobuf_tag),
     type = "zip",
-    url = "https://github.com/lucidsoftware/protobuf/archive/{}.zip".format(protobuf_version),
+    url = "https://github.com/protocolbuffers/protobuf/archive/v{}.zip".format(protobuf_tag),
 )
 
-rules_scala_annex_version = "7d053fc1be463e79c5e9e35d2123b1759cfd16e8"
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+# com_github_bazelbuild_buildtools
+
+buildtools_tag = "0.29.0"
+
+buildtools_sha256 = "05eb52437fb250c7591dd6cbcfd1f9b5b61d85d6b20f04b041e0830dd1ab39b3"
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = buildtools_sha256,
+    strip_prefix = "buildtools-{}".format(buildtools_tag),
+    urls = ["https://github.com/bazelbuild/buildtools/archive/{}.zip".format(buildtools_tag)],
+)
+
+load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
+
+buildifier_dependencies()
+
+# io_bazel_rules_go
+
+rules_go_tag = "v0.20.2"
+
+rules_go_sha256 = "b9aa86ec08a292b97ec4591cf578e020b35f98e12173bbd4a921f84f583aebd9"
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = rules_go_sha256,
+    urls = [
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/rules_go/releases/download/{tag}/rules_go-{tag}.tar.gz".format(tag = rules_go_tag),
+        "https://github.com/bazelbuild/rules_go/releases/download/{tag}/rules_go-{tag}.tar.gz".format(tag = rules_go_tag),
+    ],
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+rules_scala_annex_version = "ae99fcb08bbddfc24fef00d7b13f6c065e1df8d5"
+
+rules_scala_annex_sha256 = "1630fc7ecc7a4ffeabcdef73c7600eab9cf3fd2377db1f69b8ce1927560211ff"
+
 http_archive(
     name = "rules_scala_annex",
-    sha256 = "ad0a269ba6965d2321a81331ac065d4603e62576c9d3c6f65b8c9c3a709b8536",
-    strip_prefix = "rules_scala_annex-{}".format(rules_scala_annex_version),
+    sha256 = rules_scala_annex_sha256,
+    strip_prefix = "rules_scala-{}".format(rules_scala_annex_version),
     type = "zip",
-    url = "https://github.com/andyscott/rules_scala_annex/archive/{}.zip".format(rules_scala_annex_version),
+    url = "https://github.com/higherkindness/rules_scala/archive/{}.zip".format(rules_scala_annex_version),
+)
+
+rules_jvm_external_tag = "2.9"
+
+rules_jvm_external_sha256 = "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45"
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = rules_jvm_external_sha256,
+    strip_prefix = "rules_jvm_external-{}".format(rules_jvm_external_tag),
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/{}.zip".format(rules_jvm_external_tag),
 )
 
 load(
     "@rules_scala_annex//rules/scala:workspace.bzl",
     "scala_register_toolchains",
     "scala_repositories",
-    "scala_repository"
 )
+
 scala_repositories()
+
+load("@annex//:defs.bzl", annex_pinned_maven_install = "pinned_maven_install")
+
+annex_pinned_maven_install()
+
 scala_register_toolchains()
-scala_repository(
-    "scala",
-    ("org.scala-lang", "2.11.12"),
-    "@compiler_bridge_2_11//:src",
-)
 
 load(
     "@rules_scala_annex//rules/scalafmt:workspace.bzl",
+    "scalafmt_default_config",
     "scalafmt_repositories",
-    "scalafmt_default_config"
 )
+
 scalafmt_repositories()
+
+load("@annex_scalafmt//:defs.bzl", annex_scalafmt_pinned_maven_install = "pinned_maven_install")
+
+annex_scalafmt_pinned_maven_install()
+
 scalafmt_default_config()
 
+bind(
+    name = "default_scala",
+    actual = "@rules_scala_annex//src/main/scala:zinc_2_12_8",
+)
+
 load("//:workspace.bzl", "hocon_repositories")
+
 hocon_repositories()
