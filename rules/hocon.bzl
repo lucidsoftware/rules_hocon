@@ -26,16 +26,16 @@ def _hocon_library_impl(ctx):
     if ctx.file.base:
         args.add("-b", ctx.file.base)
         all_inputs.append(ctx.file.base)
-    args.add_all("-i", ctx.files.deps, omit_if_empty=True)
+    args.add_all("-i", ctx.files.deps, omit_if_empty = True)
     all_inputs.extend(ctx.files.deps)
 
-    args.add_all("-e", ctx.files.env_key_lists, omit_if_empty=True)
+    args.add_all("-e", ctx.files.env_key_lists, omit_if_empty = True)
     all_inputs.extend(ctx.files.env_key_lists)
 
     if ctx.attr.header:
         args.add("-h", ctx.attr.header)
 
-    args.add_all("-D", ctx.attr.optional_includes, omit_if_empty=True, uniquify=True)
+    args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
     args.add(ctx.file.src)
 
     args.use_param_file("@%s")
@@ -90,7 +90,7 @@ hocon_library = rule(
             cfg = "host",
             allow_files = True,
             default = Label("//hocon-compiler"),
-        )
+        ),
     },
 )
 """Compiles a hocon source to a flattened hocon config file.
