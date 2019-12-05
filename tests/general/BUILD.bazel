@@ -1,0 +1,11 @@
+load("//rules:hocon.bzl", "hocon_library")
+
+hocon_library(
+    name = "general",
+    src = "config/1.conf",
+    out = "resolved.conf",
+    base = "config/base.conf",
+    header = "# Resolved configuration\n",
+    env_key_lists = ["config/env1_keys", "config/env2_keys"],
+    deps = ["config/2.conf"],
+)

@@ -21,6 +21,9 @@ case "$1" in
     "lint")
         ./scripts/format.sh check
         ;;
+    "test")
+        ./tests/run_tests.sh
+        ;;
     "")
         echo "command not specified"
         exit 1
