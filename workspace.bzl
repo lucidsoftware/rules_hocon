@@ -1,4 +1,5 @@
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
+load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 def hocon_repositories():
     jvm_maven_import_external(
@@ -13,4 +14,19 @@ def hocon_repositories():
         artifact = "org.rogach:scallop_2.11:3.1.3",
         artifact_sha256 = "ed860257bd1aa8120b35c7e03b3ba5764dbf4b7d96267bc0c145500245fee3c0",
         server_urls = ["https://repo.maven.apache.org/maven2"],
+    )
+
+    maven_install(
+        name = "hocon_maven",
+        artifacts = [
+            "org.scala-sbt:compiler-interface:1.2.1",
+            "org.scala-sbt:util-interface:1.2.0",
+            "org.scala-lang:scala-compiler:2.11.12",
+            "org.scala-lang:scala-library:2.11.12",
+            "org.scala-lang:scala-reflect:2.11.12",
+        ],
+        repositories = [
+            "http://central.maven.org/maven2",
+        ],
+        fetch_sources = True,
     )
