@@ -121,8 +121,11 @@ annex_scalafmt_pinned_maven_install()
 scalafmt_default_config()
 
 load("//:workspace.bzl", "hocon_repositories")
+
 hocon_repositories()
+
 load("@hocon_maven//:defs.bzl", hocon_maven_install = "pinned_maven_install")
+
 hocon_maven_install()
 
 bind(
@@ -143,6 +146,7 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 """
+
 http_archive(
     name = "jdk8-linux",
     build_file_content = jdk_build_file_content,
@@ -150,6 +154,7 @@ http_archive(
     strip_prefix = "jdk8u212-b03",
     url = "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b03/OpenJDK8U-jdk_x64_linux_hotspot_8u212b03.tar.gz",
 )
+
 http_archive(
     name = "jdk8-osx",
     build_file_content = jdk_build_file_content,
