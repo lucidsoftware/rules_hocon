@@ -1,0 +1,21 @@
+load("//rules:hocon.bzl", "hocon_library")
+
+# 2.conf doesn't exist but 3.conf does
+
+hocon_library(
+    name = "good",
+    src = "config/1.conf",
+    out = "good.conf",
+    optional_includes = [
+        "2.conf",
+        "3.conf",
+    ],
+    deps = glob(["config/2.conf"]) + glob(["config/3.conf"]),
+)
+
+hocon_library(
+    name = "bad",
+    src = "config/1.conf",
+    out = "bad.conf",
+    deps = glob(["config/2.conf"]) + glob(["config/3.conf"]),
+)
