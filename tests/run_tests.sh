@@ -1,3 +1,6 @@
 #! /bin/bash -e
 
-find $(dirname $0) -name "test.sh" | xargs bash
+for test in $(find $(dirname $0) -name "test.sh"); do
+  echo "running $test..."
+  bash $test || echo "FAILURE: $test failed."
+done;

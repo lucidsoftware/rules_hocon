@@ -1,0 +1,15 @@
+load("//rules:hocon.bzl", "hocon_library")
+
+hocon_library(
+    name = "good",
+    src = "config/good.conf",
+    out = "good.conf",
+    env_key_lists = ["config/env1_keys", "config/env2_keys"],
+)
+
+hocon_library(
+    name = "bad",
+    src = "config/bad.conf",
+    out = "bad.conf",
+    env_key_lists = ["config/env1_keys", "config/env2_keys"],
+)
