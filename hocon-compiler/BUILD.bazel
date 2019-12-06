@@ -12,6 +12,6 @@ scala_binary(
     visibility = ["//visibility:public"],
     deps = [
         "@hocon_maven//:com_typesafe_config",
-        "@hocon_maven//:org_rogach_scallop_2_11",
+        "@hocon_maven//:org_rogach_scallop_2_12",
     ],
 )
