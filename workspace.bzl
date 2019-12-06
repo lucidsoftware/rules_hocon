@@ -5,12 +5,12 @@ def hocon_repositories():
         name = "hocon_maven",
         artifacts = [
             "com.typesafe:config:1.3.3",
-            "org.rogach:scallop_2.11:3.1.3",
+            "org.rogach:scallop_2.12:3.3.2",
             "org.scala-sbt:compiler-interface:1.2.1",
             "org.scala-sbt:util-interface:1.2.0",
-            "org.scala-lang:scala-compiler:2.11.12",
-            "org.scala-lang:scala-library:2.11.12",
-            "org.scala-lang:scala-reflect:2.11.12",
+            "org.scala-lang:scala-compiler:2.12.8",
+            "org.scala-lang:scala-library:2.12.8",
+            "org.scala-lang:scala-reflect:2.12.8",
         ],
         repositories = [
             "http://central.maven.org/maven2",

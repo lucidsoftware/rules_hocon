@@ -1,9 +1,3 @@
-# Necessary to use JDK 8 (which is needed by Scala 2.11)
-build --javabase="//:jdk"
-build --java_toolchain="@bazel_tools//tools/jdk:toolchain_hostjdk8"
-build --host_javabase="//:jdk"
-build --host_java_toolchain="@bazel_tools//tools/jdk:toolchain_hostjdk8"
-
 build --define=scala_deps_direct=error
 build --define=scala_deps_used=error
 

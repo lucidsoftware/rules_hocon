@@ -5,7 +5,7 @@ load(
     "scala_library",
 )
 
-scala_version = "2.11.12"
+scala_version = "2.12.8"
 
 compiler_classpath = [
     "@hocon_maven//:org_scala_lang_scala_compiler",
@@ -28,7 +28,7 @@ configure_bootstrap_scala(
 scala_library(
     name = "compiler_bridge",
     srcs = [
-        "@compiler_bridge_2_11//:src",
+        "@compiler_bridge_2_12//:src",
     ],
     scala = ":bootstrap",
     visibility = ["//visibility:public"],
@@ -48,7 +48,7 @@ configure_zinc_scala(
 )
 
 alias(
-    name = "2_11",
+    name = "2_12",
     actual = ":zinc",
     visibility = ["//visibility:public"],
 )
