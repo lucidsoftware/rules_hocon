@@ -5,7 +5,7 @@ hocon_library(
     src = "config/1.conf",
     out = "resolved.conf",
     base = "config/base.conf",
-    header = "# Resolved configuration\n",
     env_key_lists = ["config/env_keys"],
+    header = "# Resolved configuration\n",
     deps = ["config/2.conf"],
 )

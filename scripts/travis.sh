@@ -17,7 +17,6 @@ case "$1" in
     "build")
         bazel build --show_progress_rate_limit=2 //hocon-compiler
         ;;
-
     "lint")
         ./scripts/format.sh check
         ;;
