@@ -15,11 +15,13 @@ cd "$(dirname "$0")/.."
 case "$1" in
 
     "build")
-        bazel build --show_progress_rate_limit=2 //...
+        bazel build --show_progress_rate_limit=2 //hocon-compiler
         ;;
-
     "lint")
         ./scripts/format.sh check
+        ;;
+    "test")
+        ./tests/run_tests.sh
         ;;
     "")
         echo "command not specified"
