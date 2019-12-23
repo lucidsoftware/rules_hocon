@@ -43,7 +43,7 @@ object Compiler {
       writeConfig(merged, opts.output(), opts.header())
     } catch {
       case NonFatal(e) =>
-        printError(e.toString)
+        printError(e)
         System.exit(1)
     }
   }
@@ -74,8 +74,14 @@ object Compiler {
     }
   }
 
+  private val errorPrefix = "\u001b[31mERROR:\u001b[0m "
   private def printError(s: String) {
-    System.err.println("\u001b[31mERROR:\u001b[0m " + s)
+    System.err.println(errorPrefix + s)
+  }
+
+  private def printError(t: Throwable) {
+    System.err.print(errorPrefix)
+    t.printStackTrace()
   }
 
   private def readResolveList(file: File): Set[String] = {
