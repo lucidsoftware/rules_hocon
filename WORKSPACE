@@ -69,9 +69,9 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
-rules_scala_annex_version = "ae99fcb08bbddfc24fef00d7b13f6c065e1df8d5"
+rules_scala_annex_version = "43bcd8eee8e07c74712f3c73c158ee2fe38ecb7c"
 
-rules_scala_annex_sha256 = "1630fc7ecc7a4ffeabcdef73c7600eab9cf3fd2377db1f69b8ce1927560211ff"
+rules_scala_annex_sha256 = "0bdb4320a589b4ffe7e5f5b261222bae5a78bcce97d9c06e31f274a5fc125d82"
 
 http_archive(
     name = "rules_scala_annex",
