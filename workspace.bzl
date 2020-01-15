@@ -13,7 +13,7 @@ def hocon_repositories():
             "org.scala-lang:scala-reflect:2.12.8",
         ],
         repositories = [
-            "http://central.maven.org/maven2",
+            "https://repo.maven.apache.org/maven2",
         ],
         fetch_sources = True,
         maven_install_json = "@io_bazel_rules_hocon//:hocon_maven_install.json",
