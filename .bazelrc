@@ -15,8 +15,8 @@ build --python_path=/usr/bin/python3
 run --python_path=/usr/bin/python3
 test --python_path=/usr/bin/python3
 
-common:v1.0 --config=noop
-common:v1.1 --config=noop
+common:v2.1 --config=noop
+common:v2.2 --config=noop
 
 # pick something trivial as a "noop"
 common:noop --logging=3

@@ -6,14 +6,11 @@ def hocon_repositories():
         artifacts = [
             "com.typesafe:config:1.3.3",
             "org.rogach:scallop_2.12:3.3.2",
-            "org.scala-sbt:compiler-interface:1.2.1",
-            "org.scala-sbt:util-interface:1.2.0",
-            "org.scala-lang:scala-compiler:2.12.8",
-            "org.scala-lang:scala-library:2.12.8",
-            "org.scala-lang:scala-reflect:2.12.8",
         ],
         repositories = [
             "https://repo.maven.apache.org/maven2",
+            "https://maven-central.storage-download.googleapis.com/maven2",
+            "https://mirror.bazel.build/repo1.maven.org/maven2",
         ],
         fetch_sources = True,
         maven_install_json = "@io_bazel_rules_hocon//:hocon_maven_install.json",

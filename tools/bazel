@@ -18,7 +18,7 @@ abs_path() {
 workspace=$(cd $(dirname "$0")/..; pwd)
 root_workspace=$(cd $(dirname $(abs_path "$0"))/..; pwd)
 
-default_bazel_version='1.1.0'
+default_bazel_version='2.2.0'
 
 if [ -z "$BAZEL_VERSION" ]; then
     bazel_version="$default_bazel_version"
@@ -31,13 +31,13 @@ case "$bazel_version" in
         bazel_version=$("$BAZEL_REAL" version | awk '/Build label/ {print $3}' | cut -d '-' -f 1)
         bazel="$BAZEL_REAL"
         ;;
-    '1.0.0')
-        darwin_sha='fdab79e3a89e979b63487fd268761aac17a6ca4c8a41830743978c46d2160ff9'
-        linux_sha='f8490463360fff5992b5a5af93f930ff984588765f9ccf3e7dd03db5145fbf0f'
+    '2.1.0')
+        darwin_sha='0be7e8266523922ab63720775a6e4174468bd617e016e89d726a0f3441c46396'
+        linux_sha='501c5a48bf6e4d836ecfe27f471bfbab029d2bf0cf62e69a0320f0dc576be56a'
         ;;
-    '1.1.0')
-        darwin_sha='1a552f4ce194860fbbd50eeb319f81788ddf50a849e92378eec72231cc64ef65'
-        linux_sha='14301099c87568db302d59a5d3585f5eb8a6250ac2c6bb0367c56e623ff6e65f'
+    '2.2.0')
+        darwin_sha='8a0238c126d086f3641efda177fa8fc1e85ba09c2af10c0977f14b202a9e7a5a'
+        linux_sha='6dfcd3b3d7a8811f53a1776c285cf533bc12c33d1eaf49b6105e9699df26ef57'
         ;;
     *)
         echo "The requested Bazel version '$bazel_version' is not supported"
