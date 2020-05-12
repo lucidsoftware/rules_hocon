@@ -37,7 +37,8 @@ def _hocon_library_impl(ctx):
 
     args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
 
-    args.add("--warnings", ctx.attr.warnings)
+    if ctx.attr.warnings:
+        args.add("--warnings")
     args.add(ctx.file.src)
 
     args.use_param_file("@%s")
