@@ -19,7 +19,7 @@ object Compiler {
     }
     val optionalInclude = opt[List[String]](short='D', default = Some(Nil)).map(_.toSet)
     val header = opt[String](default = Some(""))
-
+    val warnings = opt[Boolean](default = Some(false))
     val src = trailArg[File]()
 
     verify()
@@ -36,7 +36,7 @@ object Compiler {
       val configParser = new ConfigParser(opts.include(), opts.optionalInclude())
       val baseConfig = opts.base.toOption.map(configParser.parse)
       val mainConfig = configParser.parse(opts.src())
-      val merged = baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base)).getOrElse(mainConfig)
+      val merged = baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base, opts.warnings())).getOrElse(mainConfig)
 
       checkResolution(merged, opts.resolveLists())
 

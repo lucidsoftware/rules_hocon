@@ -36,6 +36,8 @@ def _hocon_library_impl(ctx):
         args.add("-h", ctx.attr.header)
 
     args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
+
+    args.add("--warnings", ctx.attr.warnings)
     args.add(ctx.file.src)
 
     args.use_param_file("@%s")
@@ -85,6 +87,11 @@ hocon_library = rule(
             mandatory = False,
         ),
         "out": attr.output(mandatory = True),
+        "warnings": attr.bool(
+            doc = """Specifies whether or not to see warnings about override config files with
+            config keys not in the base config.""",
+            default = False,
+        ),
         "_hocon_compiler": attr.label(
             executable = True,
             cfg = "host",
