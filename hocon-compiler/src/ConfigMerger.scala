@@ -2,7 +2,7 @@ package ruleshocon
 
 import com.typesafe.config._
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object ConfigMerger {
   /**
@@ -49,6 +49,6 @@ object ConfigMerger {
       }
     }
 
-    impl(conf.root, ConfigUtil.splitPath(path).asScala)
+    impl(conf.root, ConfigUtil.splitPath(path).asScala.toSeq)
   }
 }

@@ -119,7 +119,7 @@ scalafmt_default_config()
 
 bind(
     name = "default_scala",
-    actual = "@rules_scala_annex//src/main/scala:zinc_2_12_10",
+    actual = "//scala:default_scala",
 )
 
 load("//:workspace.bzl", "hocon_repositories")

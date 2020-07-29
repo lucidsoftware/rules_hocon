@@ -5,7 +5,12 @@ def hocon_repositories():
         name = "hocon_maven",
         artifacts = [
             "com.typesafe:config:1.3.3",
-            "org.rogach:scallop_2.12:3.3.2",
+            "org.rogach:scallop_2.13:3.3.2",
+            # Core scala libraries, compiler, etc.
+            "org.scala-lang:scala-compiler:2.13.3",
+            "org.scala-lang:scala-library:2.13.3",
+            "org.scala-lang:scala-reflect:2.13.3",
+            "org.scala-sbt:compiler-bridge_2.13:1.3.4",
         ],
         repositories = [
             "https://repo.maven.apache.org/maven2",
