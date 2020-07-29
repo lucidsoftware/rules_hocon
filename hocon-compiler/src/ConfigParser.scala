@@ -4,7 +4,7 @@ import com.typesafe.config._
 import java.io.File
 import java.nio.file.{Files, Path, Paths}
 
-class ConfigParser(paths: Traversable[File] = Nil, allowedMissing: Set[String]) {
+class ConfigParser(paths: Iterable[File] = Nil, allowedMissing: Set[String]) {
   private val options = ConfigParseOptions.defaults()
     .setAllowMissing(false)
     .setIncluder(new PathIncluder(paths, allowedMissing))
@@ -14,7 +14,7 @@ class ConfigParser(paths: Traversable[File] = Nil, allowedMissing: Set[String]) 
   }
 }
 
-private class PathIncluder(paths: Traversable[File], allowedMissing: Set[String]) extends ConfigIncluder
+private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String]) extends ConfigIncluder
   with ConfigIncluderFile {
   private val nameMap: Map[String, File] = paths.map { file =>
     file.getName -> file

@@ -30,7 +30,7 @@ object Compiler {
     .setJson(false)
 
   final def main(args: Array[String]): Unit = {
-    val opts = new CommandOpts(args)
+    val opts = new CommandOpts(args.toIndexedSeq)
 
     try {
       val configParser = new ConfigParser(opts.include(), opts.optionalInclude())
@@ -49,7 +49,7 @@ object Compiler {
   }
 
   private def checkResolution(conf: Config, resolveLists: ResolveLists): Unit = {
-    val resolver = new PathCheckResolver(resolveLists.validKeys)
+    val resolver = new PathCheckResolver(resolveLists.validKeys.toSet)
     val resolveOptions = ConfigResolveOptions.defaults()
       .appendResolver(resolver)
       .setAllowUnresolved(true)
@@ -75,11 +75,11 @@ object Compiler {
   }
 
   private val errorPrefix = "\u001b[31mERROR:\u001b[0m "
-  private def printError(s: String) {
+  private def printError(s: String): Unit = {
     System.err.println(errorPrefix + s)
   }
 
-  private def printError(t: Throwable) {
+  private def printError(t: Throwable): Unit =  {
     System.err.print(errorPrefix)
     t.printStackTrace()
   }
@@ -94,10 +94,10 @@ object Compiler {
     } finally {
       source.close()
     }
-    builder.result
+    builder.result()
   }
 
-  private def writeConfig(conf: Config, path: File, header: String) {
+  private def writeConfig(conf: Config, path: File, header: String): Unit =  {
     val writer = new FileWriter(path)
     try {
       writer.write(header)
