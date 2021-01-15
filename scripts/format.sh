@@ -10,8 +10,6 @@
 set -o pipefail
 cd "$(dirname "$0")/.."
 
-. ./scripts/prepare-path.sh --force
-
 if [ "$1" != check ]; then
     bazel run buildifier
 else
