@@ -78,13 +78,11 @@ http_archive(
     url = "https://github.com/higherkindness/rules_scala/archive/{}.zip".format(rules_scala_annex_version),
 )
 
-rules_jvm_external_tag = "3.2"
-
-rules_jvm_external_sha256 = "82262ff4223c5fda6fb7ff8bd63db8131b51b413d26eb49e3131037e79e324af"
+rules_jvm_external_tag = "4.2"
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = rules_jvm_external_sha256,
+    sha256 = "cd1a77b7b02e8e008439ca76fd34f5b07aecb8c752961f9640dea15e9e5ba1ca",
     strip_prefix = "rules_jvm_external-{}".format(rules_jvm_external_tag),
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/{}.zip".format(rules_jvm_external_tag),
 )
