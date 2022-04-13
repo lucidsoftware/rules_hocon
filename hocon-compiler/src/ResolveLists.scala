@@ -18,7 +18,7 @@ class ResolveLists(roles: Map[String, Set[String]]) {
    * are missing for that list.
    */
   def missingKeysPerList(keys: Set[String]): Map[String, Set[String]] = {
-    roles.mapValues(keys.diff).filter(_._2.nonEmpty)
+    roles.view.mapValues(keys.diff).filter(_._2.nonEmpty).toMap
   }
 
   def +(pair: (String, Set[String])): ResolveLists = {

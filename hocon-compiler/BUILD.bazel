@@ -6,12 +6,11 @@ scala_binary(
     jvm_flags = ["-Dfile.encoding=UTF-8"],
     main_class = "ruleshocon.Compiler",
     scalacopts = [
-        "-Ywarn-unused-import",
         "-Xfatal-warnings",
     ],
     visibility = ["//visibility:public"],
     deps = [
         "@hocon_maven//:com_typesafe_config",
-        "@hocon_maven//:org_rogach_scallop_2_12",
+        "@hocon_maven//:org_rogach_scallop_2_13",
     ],
 )
