@@ -11,7 +11,6 @@ def hocon_repositories():
             "org.scala-lang:scala-library:2.13.3",
             "org.scala-lang:scala-reflect:2.13.3",
             "org.scala-sbt:compiler-bridge_2.13:1.3.4",
-
         ],
         repositories = [
             "https://repo.maven.apache.org/maven2",
