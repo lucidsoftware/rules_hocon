@@ -33,7 +33,7 @@ def _hocon_library_impl(ctx):
     all_inputs.extend(ctx.files.env_key_lists)
 
     if ctx.attr.header:
-        args.add("-h", ctx.attr.header)
+        args.add("-h", ctx.expand_location(ctx.attr.header))
 
     args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
 
@@ -84,7 +84,7 @@ hocon_library = rule(
             default = [],
         ),
         "header": attr.string(
-            doc = "A string to include at the beginning of the output",
+            doc = "A string to include at the beginning of the output. Allows $location expansion.",
             mandatory = False,
         ),
         "out": attr.output(mandatory = True),
