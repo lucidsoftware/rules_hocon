@@ -13,9 +13,16 @@ hocon_library(
 hocon_library(
     name = "bad",
     src = "config/bad.conf",
-    out = "bad.conf",
+    out = "missing.conf",
     env_key_lists = [
         "config/env1_keys",
         "config/env2_keys",
     ],
+)
+
+hocon_library(
+    name = "missing",
+    src = "config/bad.conf",
+    out = "bad.conf",
+    allow_missing_keys = True,
 )

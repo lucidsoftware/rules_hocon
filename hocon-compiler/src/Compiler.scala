@@ -20,6 +20,7 @@ object Compiler {
     val optionalInclude = opt[List[String]](short='D', default = Some(Nil)).map(_.toSet)
     val header = opt[String](default = Some(""))
     val warnings = opt[Boolean](default = Some(false))
+    val allowMissing = opt[Boolean](default = Some(false))
     val src = trailArg[File]()
 
     verify()
@@ -38,7 +39,7 @@ object Compiler {
       val mainConfig = configParser.parse(opts.src())
       val merged = baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base, opts.warnings())).getOrElse(mainConfig)
 
-      checkResolution(merged, opts.resolveLists())
+      checkResolution(merged, opts.resolveLists(), opts.allowMissing())
 
       writeConfig(merged, opts.output(), opts.header())
     } catch {
@@ -48,7 +49,7 @@ object Compiler {
     }
   }
 
-  private def checkResolution(conf: Config, resolveLists: ResolveLists): Unit = {
+  private def checkResolution(conf: Config, resolveLists: ResolveLists, allowMissing: Boolean): Unit = {
     val resolver = new PathCheckResolver(resolveLists.validKeys.toSet)
     val resolveOptions = ConfigResolveOptions.defaults()
       .appendResolver(resolver)
@@ -62,7 +63,7 @@ object Compiler {
     // while merging fallbacks
     conf.resolve(resolveOptions)
 
-    if (resolver.hasMissingPaths) {
+    if (resolver.hasMissingPaths && !allowMissing) {
       if (resolveLists.isEmpty) {
         printError(s"Unresolvable keys: ${resolver.missingPaths.mkString(", ")}")
       } else {

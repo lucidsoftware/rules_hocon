@@ -39,6 +39,8 @@ def _hocon_library_impl(ctx):
 
     if ctx.attr.warnings:
         args.add("--warnings")
+    if ctx.attr.allow_missing_keys:
+        args.add("--allow-missing")
     args.add(ctx.file.src)
 
     args.use_param_file("@%s")
@@ -91,6 +93,10 @@ hocon_library = rule(
         "warnings": attr.bool(
             doc = """Specifies whether or not to see warnings about override config files with
             config keys not in the base config.""",
+            default = False,
+        ),
+        "allow_missing_keys": attr.bool(
+            doc = """Specifies whether or not to allow config keys that could not be resolved.""",
             default = False,
         ),
         "_hocon_compiler": attr.label(
