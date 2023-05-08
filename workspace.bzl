@@ -4,7 +4,7 @@ def hocon_repositories():
     maven_install(
         name = "hocon_maven",
         artifacts = [
-            "com.typesafe:config:1.3.3",
+            "com.typesafe:config:1.4.2",
             "org.rogach:scallop_2.13:3.3.2",
             # Core scala libraries, compiler, etc.
             "org.scala-lang:scala-compiler:2.13.3",
