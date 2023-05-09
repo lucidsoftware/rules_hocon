@@ -5,7 +5,7 @@ load(
     "scala_library",
 )
 
-scala_version = "2.13.3"
+scala_version = "2.13.10"
 
 compiler_classpath = [
     "@hocon_maven//:org_scala_lang_scala_compiler",
