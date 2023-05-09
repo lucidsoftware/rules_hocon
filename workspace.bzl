@@ -1,5 +1,7 @@
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+scala_version = "2.13.10"
+
 def hocon_repositories():
     maven_install(
         name = "hocon_maven",
@@ -7,10 +9,10 @@ def hocon_repositories():
             "com.typesafe:config:1.4.2",
             "org.rogach:scallop_2.13:3.3.2",
             # Core scala libraries, compiler, etc.
-            "org.scala-lang:scala-compiler:2.13.3",
-            "org.scala-lang:scala-library:2.13.3",
-            "org.scala-lang:scala-reflect:2.13.3",
-            "org.scala-sbt:compiler-bridge_2.13:1.3.4",
+            "org.scala-lang:scala-compiler:{}".format(scala_version),
+            "org.scala-lang:scala-library:{}".format(scala_version),
+            "org.scala-lang:scala-reflect:{}".format(scala_version),
+            "org.scala-sbt:compiler-bridge_2.13:1.5.7",
         ],
         repositories = [
             "https://repo.maven.apache.org/maven2",
