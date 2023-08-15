@@ -66,23 +66,23 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
-rules_scala_annex_version = "ff423d8bdd0e5383f8f2c048ffd7704bb51a91bf"
+rules_scala_annex_version = "938ffdc24fb25a58220aa650948761073f1dd83b"
 
-rules_scala_annex_sha256 = "ae53e9ed5fecadc7baf4637b88109471602be73dda4e5ff6b4bf1767932703c0"
+rules_scala_annex_sha256 = "ae0cfd560a5238248d5f4c9fcde352e5dfc87cba5efd0b97e4c88ea839fd51b5"
 
 http_archive(
     name = "rules_scala_annex",
     sha256 = rules_scala_annex_sha256,
     strip_prefix = "rules_scala-{}".format(rules_scala_annex_version),
     type = "zip",
-    url = "https://github.com/higherkindness/rules_scala/archive/{}.zip".format(rules_scala_annex_version),
+    url = "https://github.com/lucidsoftware/rules_scala/archive/{}.zip".format(rules_scala_annex_version),
 )
 
-rules_jvm_external_tag = "4.2"
+rules_jvm_external_tag = "5.3"
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "cd1a77b7b02e8e008439ca76fd34f5b07aecb8c752961f9640dea15e9e5ba1ca",
+    sha256 = "6cc8444b20307113a62b676846c29ff018402fd4c7097fcd6d0a0fd5f2e86429",
     strip_prefix = "rules_jvm_external-{}".format(rules_jvm_external_tag),
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/{}.zip".format(rules_jvm_external_tag),
 )
