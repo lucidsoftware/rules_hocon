@@ -12,6 +12,8 @@ cd "$(dirname "$0")/.."
 
 if [ "$1" != check ]; then
     bazel run buildifier
+    bazel run :scalafmt
 else
     bazel run buildifier_check
+    bazel run :scalafmt-test
 fi

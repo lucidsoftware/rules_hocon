@@ -8,3 +8,13 @@ buildifier(
     name = "buildifier_check",
     mode = "check",
 )
+
+alias(
+    name = "scalafmt",
+    actual = "//hocon-compiler:hocon-compiler.format",
+)
+
+alias(
+    name = "scalafmt-test",
+    actual = "//hocon-compiler:hocon-compiler.format-test",
+)

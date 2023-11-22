@@ -1,8 +1,9 @@
-load("@rules_scala_annex//rules:scala.bzl", "scala_binary")
+load("@rules_scala_annex//rules:scala_with_scalafmt.bzl", "scala_binary")
 
 scala_binary(
     name = "hocon-compiler",
     srcs = glob(["src/**/*.scala"]),
+    format = True,
     jvm_flags = ["-Dfile.encoding=UTF-8"],
     main_class = "ruleshocon.Compiler",
     scalacopts = [
