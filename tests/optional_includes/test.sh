@@ -9,7 +9,7 @@ if [[ $? -ne 0 ]]; then echo "$out"; exit 1; fi
 
 # Verify 3.conf was included
 config_path="bazel-bin/tests/optional_includes/good.conf"
-cat "$config_path" | grep -oq '"some-config" *: *"hello"'
+cat "$config_path" | grep -oq 'some-config=hello'
 if [[ $? -ne 0 ]]; then echo "Malformed config: "; cat "$config_path"; exit 1; fi
 
 out=$(! bazel build //tests/optional_includes:bad 2>&1)
