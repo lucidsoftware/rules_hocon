@@ -3,6 +3,7 @@ package ruleshocon
 import java.io.{File, FileWriter}
 import scala.io.Source
 import scala.util.control.NonFatal
+import scala.util.Using
 import com.typesafe.config._
 import org.rogach.scallop._
 
@@ -21,14 +22,13 @@ object Compiler {
     val header = opt[String](default = Some(""))
     val warnings = opt[Boolean](default = Some(false))
     val allowMissing = opt[Boolean](default = Some(false))
+    val includeComments = toggle("comments", default = Some(true), noshort = true)
+    val doResolve = toggle("resolve", default = Some(true), noshort = true)
     val src = trailArg[File]()
 
     verify()
   }
 
-  private val renderOptions = ConfigRenderOptions.defaults()
-    .setOriginComments(false)
-    .setJson(false)
 
   final def main(args: Array[String]): Unit = {
     val opts = new CommandOpts(args.toIndexedSeq)
@@ -39,9 +39,19 @@ object Compiler {
       val mainConfig = configParser.parse(opts.src())
       val merged = baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base, opts.warnings())).getOrElse(mainConfig)
 
-      checkResolution(merged, opts.resolveLists(), opts.allowMissing())
+      val resolved = resolve(merged, opts.resolveLists(), opts.allowMissing())
 
-      writeConfig(merged, opts.output(), opts.header())
+      val finalConfig = if (opts.doResolve()) {
+        resolved
+      } else {
+        merged
+      }
+
+      val renderOptions = ConfigRenderOptions.defaults()
+        .setOriginComments(false)
+        .setComments(opts.includeComments())
+
+      writeConfig(finalConfig, renderOptions, opts.output(), opts.header())
     } catch {
       case NonFatal(e) =>
         printError(e)
@@ -49,7 +59,7 @@ object Compiler {
     }
   }
 
-  private def checkResolution(conf: Config, resolveLists: ResolveLists, allowMissing: Boolean): Unit = {
+  private def resolve(conf: Config, resolveLists: ResolveLists, allowMissing: Boolean): Config = {
     val resolver = new PathCheckResolver(resolveLists.validKeys.toSet)
     val resolveOptions = ConfigResolveOptions.defaults()
       .appendResolver(resolver)
@@ -58,10 +68,9 @@ object Compiler {
     // Resolve to make sure any references refer to something defined either
     // at compile time (in the conf files) or runtime (specified by the resolve lists)
     //
-    // NB: don't actually use the resolved result because it
-    // can produce invalid output when there are unresolved values
-    // while merging fallbacks
-    conf.resolve(resolveOptions)
+    // This will also simplify any references to other config that can be resolved, producing
+    // a simpler configuration output (if the result is used).
+    val resolved = conf.resolve(resolveOptions)
 
     if (resolver.hasMissingPaths && !allowMissing) {
       if (resolveLists.isEmpty) {
@@ -73,6 +82,7 @@ object Compiler {
       }
       System.exit(1)
     }
+    resolved
   }
 
   private val errorPrefix = "\u001b[31mERROR:\u001b[0m "
@@ -98,14 +108,11 @@ object Compiler {
     builder.result()
   }
 
-  private def writeConfig(conf: Config, path: File, header: String): Unit =  {
-    val writer = new FileWriter(path)
-    try {
+  private def writeConfig(conf: Config, renderOpts: ConfigRenderOptions, path: File, header: String): Unit =  {
+    Using.resource(new FileWriter(path)) { writer =>
       writer.write(header)
       writer.write("\n")
-      writer.write(conf.root.render(renderOptions))
-    } finally {
-      writer.close()
-    }
+      writer.write(conf.root.render(renderOpts))
+    } 
   }
 }
