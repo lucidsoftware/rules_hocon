@@ -41,6 +41,9 @@ def _hocon_library_impl(ctx):
     if not ctx.attr.resolve:
         args.add("--noresolve")
 
+    if ctx.attr.json:
+        args.add("--json")
+
     args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
 
     if ctx.attr.warnings:
@@ -112,6 +115,11 @@ hocon_library = rule(
         "resolve": attr.bool(
             doc = "If true, the output will resolve any references where possible, so that the only remaining references are to values that will be supplied at runtime.",
             default = True,
+        ),
+        "json": attr.bool(
+            doc = """If true, then output in  a json-like format.
+            Note that it may include comments and references that aren't actually valid JSON""",
+            default = False,
         ),
         "_hocon_compiler": attr.label(
             executable = True,

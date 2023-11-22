@@ -24,6 +24,7 @@ object Compiler {
     val allowMissing = opt[Boolean](default = Some(false))
     val includeComments = toggle("comments", default = Some(true), noshort = true)
     val doResolve = toggle("resolve", default = Some(true), noshort = true)
+    val json = toggle("json", default = Some(false), noshort = true)
     val src = trailArg[File]()
 
     verify()
@@ -50,6 +51,7 @@ object Compiler {
       val renderOptions = ConfigRenderOptions
         .defaults()
         .setOriginComments(false)
+        .setJson(opts.json())
         .setComments(opts.includeComments())
 
       writeConfig(finalConfig, renderOptions, opts.output(), opts.header())
