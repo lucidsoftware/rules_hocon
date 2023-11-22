@@ -2,17 +2,15 @@
 
 set -e
 
-cd $(bazel info workspace 2> /dev/null)
+cd "$(bazel info workspace 2> /dev/null)"
 
 bazel build //tests/general
 
 output="bazel-bin/tests/general/resolved.conf"
-expected_hash="9d1b57f83666b74b73fb305fbb6d140655c33cc6"
-resolved_hash=$(awk '{print $1}' <<<  $(shasum $output))
+expected="tests/general/expected.conf"
 
-if [[ $resolved_hash != $expected_hash ]]; then
-	echo "ERROR: resolved config is malformed. Got $resolved_hash but expected $expected_hash"
-	echo "Generated config:"
-	cat $output
+if ! diff -u "$expected" "$output"; then
+	echo "ERROR: resolved config is malformed."
+	echo "See diff above"
 	exit 1
 fi

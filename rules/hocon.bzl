@@ -35,6 +35,12 @@ def _hocon_library_impl(ctx):
     if ctx.attr.header:
         args.add("-h", ctx.attr.header)
 
+    if not ctx.attr.include_comments:
+        args.add("--nocomments")
+
+    if not ctx.attr.resolve:
+        args.add("--noresolve")
+
     args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
 
     if ctx.attr.warnings:
@@ -98,6 +104,14 @@ hocon_library = rule(
         "allow_missing_keys": attr.bool(
             doc = """Specifies whether or not to allow config keys that could not be resolved.""",
             default = False,
+        ),
+        "include_comments": attr.bool(
+            doc = "If false, suppress all comments in the output. This removes comments from the original source",
+            default = True,
+        ),
+        "resolve": attr.bool(
+            doc = "If true, the output will resolve any references where possible, so that the only remaining references are to values that will be supplied at runtime.",
+            default = True,
         ),
         "_hocon_compiler": attr.label(
             executable = True,
