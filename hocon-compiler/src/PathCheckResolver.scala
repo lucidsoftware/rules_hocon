@@ -23,8 +23,7 @@ class PathCheckResolver(validKeys: Set[String]) extends ConfigResolver {
 }
 
 object PathCheckResolver {
-  private class WithFallback(validKeys: Set[String], fallback: ConfigResolver, missingPaths: mutable.Set[String])
-      extends ConfigResolver {
+  private class WithFallback(validKeys: Set[String], fallback: ConfigResolver, missingPaths: mutable.Set[String]) extends ConfigResolver {
     def lookup(path: String): ConfigValue = {
       if (validKeys.contains(path)) {
         null
@@ -47,3 +46,4 @@ object PathCheckResolver {
   }
 
 }
+

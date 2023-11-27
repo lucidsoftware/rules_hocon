@@ -5,7 +5,6 @@ import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 
 object ConfigMerger {
-
   /**
    * Merge overrides with base config
    */
@@ -13,10 +12,7 @@ object ConfigMerger {
     if (warnings) {
       val extraKeys = addedKeys(overrides, base)
       if (extraKeys.nonEmpty) {
-        System.err.println(
-          s"\u001b[31mWARN:\u001b[0m ${overrides.origin.filename} has config keys not in ${base.origin.filename}:\n\t${extraKeys
-            .mkString("\n\t")}",
-        )
+        System.err.println(s"\u001b[31mWARN:\u001b[0m ${overrides.origin.filename} has config keys not in ${base.origin.filename}:\n\t${extraKeys.mkString("\n\t")}")
       }
     }
     overrides.withFallback(base)
@@ -43,12 +39,11 @@ object ConfigMerger {
         true
       } else {
         current match {
-          case obj: ConfigObject =>
-            if (obj.containsKey(path.head)) {
-              impl(obj.get(path.head), path.tail)
-            } else {
-              false
-            }
+          case obj: ConfigObject => if (obj.containsKey(path.head)) {
+            impl(obj.get(path.head), path.tail)
+          } else {
+            false
+          }
           case _ => false
         }
       }
