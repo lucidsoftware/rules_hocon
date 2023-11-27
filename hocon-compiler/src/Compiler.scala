@@ -18,7 +18,7 @@ object Compiler {
         file.getName -> readResolveList(file)
       }.toMap)
     }
-    val optionalInclude = opt[List[String]](short = 'D', default = Some(Nil)).map(_.toSet)
+    val optionalInclude = opt[List[String]](short='D', default = Some(Nil)).map(_.toSet)
     val header = opt[String](default = Some(""))
     val warnings = opt[Boolean](default = Some(false))
     val allowMissing = opt[Boolean](default = Some(false))
@@ -30,6 +30,7 @@ object Compiler {
     verify()
   }
 
+
   final def main(args: Array[String]): Unit = {
     val opts = new CommandOpts(args.toIndexedSeq)
 
@@ -37,8 +38,7 @@ object Compiler {
       val configParser = new ConfigParser(opts.include(), opts.optionalInclude())
       val baseConfig = opts.base.toOption.map(configParser.parse)
       val mainConfig = configParser.parse(opts.src())
-      val merged =
-        baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base, opts.warnings())).getOrElse(mainConfig)
+      val merged = baseConfig.map(base => ConfigMerger.mergeOverrides(mainConfig, base, opts.warnings())).getOrElse(mainConfig)
 
       val resolved = resolve(merged, opts.resolveLists(), opts.allowMissing())
 
@@ -48,8 +48,7 @@ object Compiler {
         merged
       }
 
-      val renderOptions = ConfigRenderOptions
-        .defaults()
+      val renderOptions = ConfigRenderOptions.defaults()
         .setOriginComments(false)
         .setJson(opts.json())
         .setComments(opts.includeComments())
@@ -64,8 +63,7 @@ object Compiler {
 
   private def resolve(conf: Config, resolveLists: ResolveLists, allowMissing: Boolean): Config = {
     val resolver = new PathCheckResolver(resolveLists.validKeys.toSet)
-    val resolveOptions = ConfigResolveOptions
-      .defaults()
+    val resolveOptions = ConfigResolveOptions.defaults()
       .appendResolver(resolver)
       .setAllowUnresolved(true)
       .setUseSystemEnvironment(false)
@@ -81,7 +79,7 @@ object Compiler {
         printError(s"Unresolvable keys: ${resolver.missingPaths.mkString(", ")}")
       } else {
         for ((role, keys) <- resolveLists.missingKeysPerList(resolver.missingPaths)) {
-          printError(s"Role ${role} does not have the following keys: ${keys.mkString(", ")}")
+             printError(s"Role ${role} does not have the following keys: ${keys.mkString(", ")}")
         }
       }
       System.exit(1)
@@ -94,7 +92,7 @@ object Compiler {
     System.err.println(errorPrefix + s)
   }
 
-  private def printError(t: Throwable): Unit = {
+  private def printError(t: Throwable): Unit =  {
     System.err.print(errorPrefix)
     t.printStackTrace()
   }
@@ -112,11 +110,11 @@ object Compiler {
     builder.result()
   }
 
-  private def writeConfig(conf: Config, renderOpts: ConfigRenderOptions, path: File, header: String): Unit = {
+  private def writeConfig(conf: Config, renderOpts: ConfigRenderOptions, path: File, header: String): Unit =  {
     Using.resource(new FileWriter(path)) { writer =>
       writer.write(header)
       writer.write("\n")
       writer.write(conf.root.render(renderOpts))
-    }
+    } 
   }
 }

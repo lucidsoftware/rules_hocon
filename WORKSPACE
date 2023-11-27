@@ -66,9 +66,9 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
-rules_scala_annex_version = "lucid_2023-10-11"
+rules_scala_annex_version = "d396b914cc81d14a278afedc6e7885201655825c"
 
-rules_scala_annex_sha256 = "ab813f52c398571efa3540fc8c0faff6a5c500695083bb03276459278a325baf"
+rules_scala_annex_sha256 = "cb6d0dc6f0b341dfc4e9239cf6cb09e9c9228a260a1075c2540efd43ccd1c461"
 
 # The higherkindness repo hasn't been updated in a long time, so use the
 # lucidsoftware fork, which is more updated.
