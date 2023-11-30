@@ -23,7 +23,7 @@ object Compiler {
     val warnings = opt[Boolean](default = Some(false))
     val allowMissing = opt[Boolean](default = Some(false))
     val includeComments = toggle("comments", default = Some(true), noshort = true)
-    val doResolve = toggle("resolve", default = Some(true), noshort = true)
+    val doResolve = toggle("resolve", default = Some(false), noshort = true)
     val json = toggle("json", default = Some(false), noshort = true)
     val src = trailArg[File]()
 
