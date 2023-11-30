@@ -38,8 +38,8 @@ def _hocon_library_impl(ctx):
     if not ctx.attr.include_comments:
         args.add("--nocomments")
 
-    if not ctx.attr.resolve:
-        args.add("--noresolve")
+    if ctx.attr.resolve:
+        args.add("--resolve")
 
     if ctx.attr.json:
         args.add("--json")
@@ -113,8 +113,12 @@ hocon_library = rule(
             default = True,
         ),
         "resolve": attr.bool(
-            doc = "If true, the output will resolve any references where possible, so that the only remaining references are to values that will be supplied at runtime.",
-            default = True,
+            doc = """If true, the output will resolve any references where possible, so that the only remaining references are to values that will be supplied at runtime.
+
+            This should only be set to true if ther are no downstream dependencies of the resulting configuration. Otherwise, downstream dependencies won't be able to correctly override
+            any configuration values that are referenced in other config values. There are also some edge cases where resolving can produce unexpected output.
+            """,
+            default = False,
         ),
         "json": attr.bool(
             doc = """If true, then output in  a json-like format.
