@@ -7,13 +7,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ${{ matrix.os }}
-    env:
-      USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-        bazel_version: [bazelbuild/5.4.1, bazelbuild/6.4.0]
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - run: ./scripts/format.sh check

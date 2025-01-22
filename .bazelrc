@@ -15,6 +15,7 @@ build --python_path=/usr/bin/python3
 run --python_path=/usr/bin/python3
 test --python_path=/usr/bin/python3
 
+common --@rules_scala_annex//rules/scala:scala-toolchain=zinc
 common:v3.2 --config=noop
 common:v3.3 --config=noop
 
