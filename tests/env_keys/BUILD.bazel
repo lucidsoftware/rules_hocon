@@ -18,6 +18,7 @@ hocon_library(
         "config/env1_keys",
         "config/env2_keys",
     ],
+    tags = ["manual"],
 )
 
 hocon_library(
