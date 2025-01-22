@@ -34,9 +34,9 @@ _scalafmt-check() {
 }
 
 if [ "$1" != check ]; then
-    bazel run buildifier
+    bazel run //dev:buildifier
     _scalafmt
 else
-    bazel run buildifier_check
+    bazel run //dev:buildifier_check
     _scalafmt-check
 fi
