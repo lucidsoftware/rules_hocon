@@ -10,8 +10,9 @@
 set -o pipefail
 cd "$(dirname "$0")/.."
 
-bazel build @rules_scala_annex//rules/scalafmt
-scalafmtbin="bazel-bin/external/rules_scala_annex/rules/scalafmt/scalafmt-bin"
+scalafmtbin="$(mktemp)"
+
+bazel run --script_path "$scalafmtbin" @rules_scala_annex//rules/scalafmt
 
 _scalafmt() {
   find hocon-compiler -name '*.scala' -exec $scalafmtbin --config "$PWD/.scalafmt.conf" "$PWD/{}" "$PWD/{}" \;
@@ -21,7 +22,8 @@ _scalafmt-check() {
   tfile="$(mktemp)"
   failed=0
   while IFS= read -r -d $'\0' f; do
-    $scalafmtbin --config "$PWD/.scalafmt.conf" "$PWD/$f" "$tfile"
+    # `/tmp` may be mounted as `noexec`, in which case we can't execute `"$scalafmtbin"` directly
+    bash $scalafmtbin --config "$PWD/.scalafmt.conf" "$PWD/$f" "$tfile"
     if ! diff -u "$f" "$tfile"; then
       (( failed++ )) || true
     fi
