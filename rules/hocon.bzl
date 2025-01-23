@@ -127,7 +127,7 @@ hocon_library = rule(
         ),
         "_hocon_compiler": attr.label(
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             allow_files = True,
             default = Label("//hocon-compiler"),
         ),
