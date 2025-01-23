@@ -1,23 +1,22 @@
 build --define=scala_deps_direct=error
 build --define=scala_deps_used=error
-
 build --experimental_strict_action_env
-test --experimental_strict_action_env
-
-build --strategy=ScalaCompile=worker
-build --strategy=ScalaCheckDeps=worker
-build --strategy=ScalaFmt=worker
-test --strategy=ScalaCompile=worker
-test --strategy=ScalaCheckDeps=worker
-test --strategy=ScalaFmt=worker
-
 build --python_path=/usr/bin/python3
-run --python_path=/usr/bin/python3
-test --python_path=/usr/bin/python3
+build --strategy=ScalaCheckDeps=worker
+build --strategy=ScalaCompile=worker
+build --strategy=ScalaFmt=worker
+
+# pick something trivial as a "noop"
+common:noop --logging=3
 
 common --@rules_scala_annex//rules/scala:scala-toolchain=zinc
 common:v3.2 --config=noop
 common:v3.3 --config=noop
 
-# pick something trivial as a "noop"
-common:noop --logging=3
+run --python_path=/usr/bin/python3
+
+test --experimental_strict_action_env
+test --python_path=/usr/bin/python3
+test --strategy=ScalaCheckDeps=worker
+test --strategy=ScalaCompile=worker
+test --strategy=ScalaFmt=worker
