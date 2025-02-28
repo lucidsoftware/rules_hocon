@@ -15,7 +15,7 @@ object ConfigMerger {
       if (extraKeys.nonEmpty) {
         System.err.println(
           s"\u001b[31mWARN:\u001b[0m ${overrides.origin.filename} has config keys not in ${base.origin.filename}:\n\t${extraKeys
-            .mkString("\n\t")}",
+              .mkString("\n\t")}",
         )
       }
     }

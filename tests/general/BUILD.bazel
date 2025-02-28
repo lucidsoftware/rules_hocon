@@ -8,5 +8,6 @@ hocon_library(
     env_key_lists = ["config/env_keys"],
     header = "# Resolved configuration\n",
     optional_includes = ["optional.conf"],
+    resolve = True,
     deps = ["config/2.conf"],
 )

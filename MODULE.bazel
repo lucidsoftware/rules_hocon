@@ -1,0 +1,42 @@
+module(name = "rules_hocon")
+
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "rules_jvm_external", version = "6.6")
+bazel_dep(name = "rules_scala_annex")
+
+bazel_dep(name = "buildifier_prebuilt", version = "8.0.1", dev_dependency = True)
+
+rules_scala_annex_version = "lucid_2024-12-06"
+
+archive_override(
+    module_name = "rules_scala_annex",
+    integrity = "sha256-lSbyWlYtgP0ENngg4gKU1EBJ8d1sgMQKJlmOHwmCw3k=",
+    strip_prefix = "rules_scala-{}".format(rules_scala_annex_version),
+    urls = ["https://github.com/lucidsoftware/rules_scala/archive/refs/tags/{}.zip".format(rules_scala_annex_version)],
+)
+
+register_toolchains("//scala:zinc")
+
+scala_version = "2.13.12"
+
+hocon_maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+hocon_maven.install(
+    name = "hocon_maven",
+    artifacts = [
+        "com.typesafe:config:1.4.3",
+        "org.rogach:scallop_2.13:5.0.1",
+        "org.scala-lang:scala-compiler:{}".format(scala_version),
+        "org.scala-lang:scala-library:{}".format(scala_version),
+        "org.scala-lang:scala-reflect:{}".format(scala_version),
+        "org.scala-sbt:compiler-bridge_2.13:1.10.4",
+    ],
+    fail_if_repin_required = True,
+    fetch_sources = True,
+    lock_file = "//:hocon_maven_install.json",
+    repositories = [
+        "https://repo.maven.apache.org/maven2",
+        "https://maven-central.storage-download.googleapis.com/maven2",
+        "https://mirror.bazel.build/repo1.maven.org/maven2",
+    ],
+)
+use_repo(hocon_maven, "hocon_maven")

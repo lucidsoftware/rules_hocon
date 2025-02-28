@@ -7,14 +7,13 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ${{ matrix.os }}
-    env:
-      USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-        bazel_version: [bazelbuild/5.4.1, bazelbuild/6.4.0]
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.1
+      - uses: bazel-contrib/setup-bazel@0.8.5
+        with:
+          bazelisk-version: 1.20.0
+
       - run: ./scripts/format.sh check
       - run: ./tests/run_tests.sh
+      - run: bazel shutdown
