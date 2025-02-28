@@ -6,11 +6,11 @@ bazel_dep(name = "rules_scala_annex")
 
 bazel_dep(name = "buildifier_prebuilt", version = "8.0.1", dev_dependency = True)
 
-rules_scala_annex_version = "lucid_2024-12-06"
+rules_scala_annex_version = "lucid_2025-02-27"
 
 archive_override(
     module_name = "rules_scala_annex",
-    integrity = "sha256-lSbyWlYtgP0ENngg4gKU1EBJ8d1sgMQKJlmOHwmCw3k=",
+    integrity = "sha256-V+btm8QF+VLhPzn906SskVY798DdzA9ofJcl2FCimOw=",
     strip_prefix = "rules_scala-{}".format(rules_scala_annex_version),
     urls = ["https://github.com/lucidsoftware/rules_scala/archive/refs/tags/{}.zip".format(rules_scala_annex_version)],
 )
