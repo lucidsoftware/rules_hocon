@@ -1,27 +1,22 @@
 load("@rules_scala_annex//rules:register_toolchain.bzl", "register_zinc_toolchain")
+load("//:versions.bzl", "scala_3_version")
 
-scala_version = "2.13.10"
-
-compiler_classpath = [
-    "@hocon_maven//:org_scala_lang_scala_compiler",
-    "@hocon_maven//:org_scala_lang_scala_library",
-    "@hocon_maven//:org_scala_lang_scala_reflect",
+compiler_classpath_3 = [
+    "@hocon_maven//:org_scala_lang_scala3_compiler_3",
+    "@hocon_maven//:org_scala_lang_scala3_library_3",
 ]
 
-runtime_classpath = [
-    "@hocon_maven//:org_scala_lang_scala_library",
+runtime_classpath_3 = [
+    "@hocon_maven//:org_scala_lang_scala3_library_3",
+    "@hocon_maven//:org_scala_lang_scala3_interfaces",
+    "@hocon_maven//:org_scala_lang_tasty_core_3",
 ]
 
 register_zinc_toolchain(
-    name = "zinc",
-    compiler_bridge = "@hocon_maven//:org_scala_sbt_compiler_bridge_2_13",
-    compiler_classpath = compiler_classpath,
-    global_scalacopts = [
-        "-Xfatal-warnings",
-        "-deprecation",
-        "-feature",
-    ],
-    runtime_classpath = runtime_classpath,
-    version = scala_version,
+    name = "zinc_3",
+    compiler_bridge = "@hocon_maven//:org_scala_lang_scala3_sbt_bridge",
+    compiler_classpath = compiler_classpath_3,
+    runtime_classpath = runtime_classpath_3,
+    version = scala_3_version,
     visibility = ["//visibility:public"],
 )

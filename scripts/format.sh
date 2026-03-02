@@ -15,7 +15,7 @@ scalafmtbin="$(mktemp)"
 bazel run --script_path "$scalafmtbin" @rules_scala_annex//rules/scalafmt
 
 _scalafmt() {
-  find hocon-compiler -name '*.scala' -exec $scalafmtbin --config "$PWD/.scalafmt.conf" "$PWD/{}" "$PWD/{}" \;
+  find hocon-compiler-cli -name '*.scala' -exec $scalafmtbin --config "$PWD/.scalafmt.conf" "$PWD/{}" "$PWD/{}" \;
 }
 
 _scalafmt-check() {
@@ -27,7 +27,7 @@ _scalafmt-check() {
     if ! diff -u "$f" "$tfile"; then
       (( failed++ )) || true
     fi
-  done < <(find hocon-compiler -name '*.scala' -print0)
+  done < <(find hocon-compiler-cli -name '*.scala' -print0)
 
   if (( failed > 0 )); then
     printf "ERROR: %d files were not correctly formatted. Please run scripts/format.sh" $failed >&2

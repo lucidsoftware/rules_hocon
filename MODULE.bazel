@@ -1,34 +1,52 @@
 module(name = "rules_hocon")
 
-bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "rules_jvm_external", version = "6.6")
+bazel_dep(name = "bazel_skylib", version = "1.9.0")
+bazel_dep(name = "rules_java", version = "9.6.1")
+bazel_dep(name = "rules_jvm_external", version = "6.10")
+bazel_dep(name = "protobuf", version = "35.0")
 bazel_dep(name = "rules_scala_annex")
 
-bazel_dep(name = "buildifier_prebuilt", version = "8.0.1", dev_dependency = True)
+bazel_dep(name = "buildifier_prebuilt", version = "8.2.1.2", dev_dependency = True)
 
-rules_scala_annex_version = "lucid_2025-03-25"
+rules_scala_annex_version = "lucid_2026-07-29"
 
 archive_override(
     module_name = "rules_scala_annex",
-    integrity = "sha256-wfcMHs+hpGtxxCvdBEcjLxkxLDSUCNYw0a8D3mpsxIE=",
+    integrity = "sha256-sFfbFtEKx4RTvF+Sy16m8kKq4ItRYsz/rKA7GMqckA0=",
     strip_prefix = "rules_scala-{}".format(rules_scala_annex_version),
-    urls = ["https://github.com/lucidsoftware/rules_scala/archive/refs/tags/{}.zip".format(rules_scala_annex_version)],
+    urls = ["https://github.com/lucidsoftware/rules_scala/archive/{}.zip".format(rules_scala_annex_version)],
 )
 
-register_toolchains("//scala:zinc")
+scala = use_extension("@rules_scala_annex//:extensions.bzl", "scala")
+scala.defaults(scala_version = "3")
+use_repo(scala, "rules_scala_annex_config")
 
-scala_version = "2.13.12"
+register_toolchains(
+    "//:repository_default_toolchain_21_definition",
+    "//scala:zinc_3",
+    "//hocon-toolchain:hocon-3",
+)
+
+# `scala_3_version` is also needed in `scala/BUILD.bazel`, but `MODULE.bazel` files can't call
+# `load`, so it's duplicated in `versions.bzl`. Please keep the two copies in sync.
+scala_3_version = "3.3.7"
+
+zinc_version = "1.11.0"
+
+protobuf_version = "4.35.0"
 
 hocon_maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 hocon_maven.install(
     name = "hocon_maven",
     artifacts = [
         "com.typesafe:config:1.4.3",
-        "org.rogach:scallop_2.13:5.0.1",
-        "org.scala-lang:scala-compiler:{}".format(scala_version),
-        "org.scala-lang:scala-library:{}".format(scala_version),
-        "org.scala-lang:scala-reflect:{}".format(scala_version),
-        "org.scala-sbt:compiler-bridge_2.13:1.10.4",
+        "org.rogach:scallop_3:5.3.0",
+        "org.scala-lang:scala3-compiler_3:{}".format(scala_3_version),
+        "org.scala-lang:scala3-library_3:{}".format(scala_3_version),
+        "org.scala-sbt:compiler-interface:{}".format(zinc_version),
+        "org.scala-sbt:util-interface:{}".format(zinc_version),
+        "org.scala-sbt:zinc_2.13:{}".format(zinc_version),
+        "com.google.protobuf:protobuf-java:{}".format(protobuf_version),
     ],
     fail_if_repin_required = True,
     fetch_sources = True,
@@ -38,5 +56,14 @@ hocon_maven.install(
         "https://maven-central.storage-download.googleapis.com/maven2",
         "https://mirror.bazel.build/repo1.maven.org/maven2",
     ],
+)
+
+# Set neverlink = True to avoid Scala 2 library being pulled on to the compiler classpath
+hocon_maven.artifact(
+    name = "hocon_maven",
+    artifact = "scala3-sbt-bridge",
+    group = "org.scala-lang",
+    neverlink = True,
+    version = scala_3_version,
 )
 use_repo(hocon_maven, "hocon_maven")

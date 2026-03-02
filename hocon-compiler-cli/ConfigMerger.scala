@@ -1,6 +1,7 @@
 package ruleshocon
 
 import com.typesafe.config._
+import java.io.PrintStream
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 
@@ -9,11 +10,11 @@ object ConfigMerger {
   /**
    * Merge overrides with base config
    */
-  def mergeOverrides(overrides: Config, base: Config, warnings: Boolean): Config = {
+  def mergeOverrides(overrides: Config, base: Config, warnings: Boolean, out: PrintStream): Config = {
     if (warnings) {
       val extraKeys = addedKeys(overrides, base)
       if (extraKeys.nonEmpty) {
-        System.err.println(
+        out.println(
           s"\u001b[31mWARN:\u001b[0m ${overrides.origin.filename} has config keys not in ${base.origin.filename}:\n\t${extraKeys
               .mkString("\n\t")}",
         )

@@ -1,4 +1,4 @@
 #!/bin/sh -e
 cd "$(dirname "$0")"
 
-bazel run @hocon_maven//:pin
+REPIN=1 bazel run @hocon_maven//:pin
