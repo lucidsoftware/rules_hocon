@@ -5,8 +5,7 @@ import java.io.File
 import java.nio.file.{Files, Path, Paths}
 
 class ConfigParser(paths: Iterable[File] = Nil, allowedMissing: Set[String]) {
-  private val options = ConfigParseOptions
-    .defaults()
+  private val options = ConfigParseOptions.defaults()
     .setAllowMissing(false)
     .setIncluder(new PathIncluder(paths, allowedMissing))
 
@@ -15,9 +14,8 @@ class ConfigParser(paths: Iterable[File] = Nil, allowedMissing: Set[String]) {
   }
 }
 
-private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String])
-    extends ConfigIncluder
-    with ConfigIncluderFile {
+private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String]) extends ConfigIncluder
+  with ConfigIncluderFile {
   private val nameMap: Map[String, File] = paths.map { file =>
     file.getName -> file
   }.toMap
@@ -25,31 +23,29 @@ private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String])
   def include(context: ConfigIncludeContext, what: String): ConfigObject = {
     getFile(what) match {
       case Some(file) => ConfigFactory.parseFile(file, context.parseOptions).root
-      case None =>
-        if (what.contains('/')) {
-          val rel = context.relativeTo(what)
-          if (findFile(Paths.get(rel.origin.url.toURI)).isDefined) {
-            rel.parse(context.parseOptions)
-          } else {
-            throw new ConfigException.Missing(what)
-          }
-        } else if (allowedMissing.contains(what)) {
-          emptyConfig
+      case None => if (what.contains('/')) {
+        val rel = context.relativeTo(what)
+        if (findFile(Paths.get(rel.origin.url.toURI)).isDefined) {
+          rel.parse(context.parseOptions)
         } else {
           throw new ConfigException.Missing(what)
         }
+      } else if (allowedMissing.contains(what)) {
+        emptyConfig
+      } else {
+        throw new ConfigException.Missing(what)
+      }
     }
   }
 
   def includeFile(context: ConfigIncludeContext, what: File): ConfigObject = {
     findFile(what.toPath) match {
       case Some(f) => ConfigFactory.parseFile(f, context.parseOptions).root
-      case None =>
-        if (allowedMissing.contains(what.toString)) {
-          emptyConfig
-        } else {
-          throw new ConfigException.Missing(what.toString)
-        }
+      case None => if (allowedMissing.contains(what.toString)) {
+        emptyConfig
+      } else {
+        throw new ConfigException.Missing(what.toString)
+      }
     }
   }
 
@@ -62,9 +58,9 @@ private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String])
     nameMap.get(what + ".conf")
   }
 
-  private def findFile(what: Path): Option[File] = nameMap.valuesIterator.find { f =>
+  private def findFile(what: Path): Option[File] = nameMap.valuesIterator.find({ f =>
     Files.isSameFile(f.toPath, what)
-  }
+  })
 
   private val emptyConfig = ConfigValueFactory.fromMap(new java.util.TreeMap)
 }

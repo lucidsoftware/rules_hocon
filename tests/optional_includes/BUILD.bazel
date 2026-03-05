@@ -10,19 +10,12 @@ hocon_library(
         "2.conf",
         "3.conf",
     ],
-    deps = glob(
-        ["config/2.conf"],
-        allow_empty = True,
-    ) + glob(["config/3.conf"]),
+    deps = glob(["config/2.conf"]) + glob(["config/3.conf"]),
 )
 
 hocon_library(
     name = "bad",
     src = "config/1.conf",
     out = "bad.conf",
-    tags = ["manual"],
-    deps = glob(
-        ["config/2.conf"],
-        allow_empty = True,
-    ) + glob(["config/3.conf"]),
+    deps = glob(["config/2.conf"]) + glob(["config/3.conf"]),
 )

@@ -3,7 +3,7 @@ package ruleshocon
 import com.typesafe.config.{ConfigResolver, ConfigValue}
 import scala.collection.mutable
 
-class PathCheckResolver(validKeys: Set[String]) extends ConfigResolver {
+class PathCheckResolver(resolveLists: ResolveLists) extends ConfigResolver {
   import PathCheckResolver._
 
   private val _missingPaths: mutable.Set[String] = mutable.Set.empty
@@ -13,20 +13,19 @@ class PathCheckResolver(validKeys: Set[String]) extends ConfigResolver {
   def hasMissingPaths: Boolean = _missingPaths.nonEmpty
 
   def lookup(path: String): ConfigValue = {
-    if (!validKeys.contains(path)) {
+    if (!resolveLists.isValid(path)) {
       _missingPaths += path
     }
     null
   }
 
-  def withFallback(fallback: ConfigResolver): ConfigResolver = new WithFallback(validKeys, fallback, _missingPaths)
+  def withFallback(fallback: ConfigResolver): ConfigResolver = new WithFallback(resolveLists, fallback, _missingPaths)
 }
 
 object PathCheckResolver {
-  private class WithFallback(validKeys: Set[String], fallback: ConfigResolver, missingPaths: mutable.Set[String])
-      extends ConfigResolver {
+  private class WithFallback(resolveLists: ResolveLists, fallback: ConfigResolver, missingPaths: mutable.Set[String]) extends ConfigResolver {
     def lookup(path: String): ConfigValue = {
-      if (validKeys.contains(path)) {
+      if (resolveLists.isValid(path)) {
         null
       } else {
         val result = fallback.lookup(path)
@@ -41,7 +40,7 @@ object PathCheckResolver {
       if (newFallback == fallback) {
         this
       } else {
-        new WithFallback(validKeys, fallback.withFallback(newFallback), missingPaths)
+        new WithFallback(resolveLists, fallback.withFallback(newFallback), missingPaths)
       }
     }
   }

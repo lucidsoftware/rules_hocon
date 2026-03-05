@@ -35,15 +35,6 @@ def _hocon_library_impl(ctx):
     if ctx.attr.header:
         args.add("-h", ctx.attr.header)
 
-    if not ctx.attr.include_comments:
-        args.add("--nocomments")
-
-    if ctx.attr.resolve:
-        args.add("--resolve")
-
-    if ctx.attr.json:
-        args.add("--json")
-
     args.add_all("-D", ctx.attr.optional_includes, omit_if_empty = True, uniquify = True)
 
     if ctx.attr.warnings:
@@ -108,26 +99,9 @@ hocon_library = rule(
             doc = """Specifies whether or not to allow config keys that could not be resolved.""",
             default = False,
         ),
-        "include_comments": attr.bool(
-            doc = "If false, suppress all comments in the output. This removes comments from the original source",
-            default = True,
-        ),
-        "resolve": attr.bool(
-            doc = """If true, the output will resolve any references where possible, so that the only remaining references are to values that will be supplied at runtime.
-
-            This should only be set to true if ther are no downstream dependencies of the resulting configuration. Otherwise, downstream dependencies won't be able to correctly override
-            any configuration values that are referenced in other config values. There are also some edge cases where resolving can produce unexpected output.
-            """,
-            default = False,
-        ),
-        "json": attr.bool(
-            doc = """If true, then output in  a json-like format.
-            Note that it may include comments and references that aren't actually valid JSON""",
-            default = False,
-        ),
         "_hocon_compiler": attr.label(
             executable = True,
-            cfg = "exec",
+            cfg = "host",
             allow_files = True,
             default = Label("//hocon-compiler"),
         ),
