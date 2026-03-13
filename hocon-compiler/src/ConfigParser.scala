@@ -3,6 +3,7 @@ package ruleshocon
 import com.typesafe.config._
 import java.io.File
 import java.nio.file.{Files, Path, Paths}
+import scala.util.Try
 
 class ConfigParser(paths: Iterable[File] = Nil, allowedMissing: Set[String]) {
   private val options = ConfigParseOptions
@@ -63,7 +64,7 @@ private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String])
   }
 
   private def findFile(what: Path): Option[File] = nameMap.valuesIterator.find { f =>
-    Files.isSameFile(f.toPath, what)
+    Try(Files.isSameFile(f.toPath, what)).getOrElse(false)
   }
 
   private val emptyConfig = ConfigValueFactory.fromMap(new java.util.TreeMap)
