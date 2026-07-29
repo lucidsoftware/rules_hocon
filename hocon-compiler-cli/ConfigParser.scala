@@ -26,7 +26,7 @@ private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String])
   def include(context: ConfigIncludeContext, what: String): ConfigObject = {
     getFile(what) match {
       case Some(file) => ConfigFactory.parseFile(file, context.parseOptions).root
-      case None =>
+      case None       =>
         if (what.contains('/')) {
           val rel = context.relativeTo(what)
           if (findFile(Paths.get(rel.origin.url.toURI)).isDefined) {
@@ -45,7 +45,7 @@ private class PathIncluder(paths: Iterable[File], allowedMissing: Set[String])
   def includeFile(context: ConfigIncludeContext, what: File): ConfigObject = {
     findFile(what.toPath) match {
       case Some(f) => ConfigFactory.parseFile(f, context.parseOptions).root
-      case None =>
+      case None    =>
         if (allowedMissing.contains(what.toString)) {
           emptyConfig
         } else {

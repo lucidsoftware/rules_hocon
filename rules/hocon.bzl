@@ -3,23 +3,16 @@
 Bazel rules for compiling multiple HOCON source files into a flattend HOCON artifact.
 
 In addition to checking syntax and flattening the configuration files, it also verifies that
-any references (`${}` syntax) either refer to internal config, or keys from a whitelist of
+any references (`${}` syntax) either refer to internal config, or keys from an allowlist of
 config that will provided at runtime.
 
 [HOCON](https://github.com/lightbend/config)
 
 """
-PROPAGATABLE_TAGS = ["no-remote", "no-cache", "no-sandbox", "no-remote-exec", "no-remote-cache"]
-
-def resolve_execution_reqs(ctx, base_exec_reqs):
-    exec_reqs = {}
-    for tag in ctx.attr.tags:
-        if tag in PROPAGATABLE_TAGS:
-            exec_reqs.update({tag: "1"})
-    exec_reqs.update(base_exec_reqs)
-    return exec_reqs
 
 def _hocon_library_impl(ctx):
+    hocon_toolchain = ctx.toolchains["//hocon-toolchain:toolchain_type"]
+
     all_inputs = [ctx.file.src]
     args = ctx.actions.args()
     args.add("-o", ctx.outputs.out)
@@ -33,7 +26,14 @@ def _hocon_library_impl(ctx):
     all_inputs.extend(ctx.files.env_key_lists)
 
     if ctx.attr.header:
-        args.add("-h", ctx.attr.header)
+        # Headers can be multiline, we write the header to a file to make parsing it easier in the worker
+        header_file = ctx.actions.declare_file(ctx.label.name + "_header.txt")
+        ctx.actions.write(
+            output = header_file,
+            content = ctx.attr.header,
+        )
+        args.add("--header", header_file)
+        all_inputs.append(header_file)
 
     if not ctx.attr.include_comments:
         args.add("--nocomments")
@@ -52,19 +52,41 @@ def _hocon_library_impl(ctx):
         args.add("--allow-missing")
     args.add(ctx.file.src)
 
-    args.use_param_file("@%s")
+    args.set_param_file_format("multiline")
+    args.use_param_file("@%s", use_always = True)
+
+    # These args are read by the worker launcher script rather than the param file, which is why
+    # they're kept in a separate args object from the param-file args.
+    jvm_flag_args = ctx.actions.args()
+    jvm_flag_args.add_all(
+        hocon_toolchain.jvm_flags,
+        format_each = "--jvm_flag=%s",
+    )
 
     ctx.actions.run(
-        executable = ctx.executable._hocon_compiler,
-        progress_message = "Compiling hocon config (%s)" % ctx.label.name,
-        execution_requirements = resolve_execution_reqs(ctx, {}),
+        arguments = [jvm_flag_args, args],
+        executable = hocon_toolchain.hocon_compiler.files_to_run,
+        execution_requirements = {
+            "supports-workers": "1",
+            "supports-multiplex-workers": "1",
+            "supports-multiplex-sandboxing": "1",
+            "supports-worker-cancellation": "1",
+            "supports-path-mapping": "1",
+        },
         inputs = all_inputs,
-        arguments = [args],
+        mnemonic = "HoconCompile",
         outputs = [ctx.outputs.out],
+        progress_message = "Compiling hocon config (%s)" % ctx.label.name,
+        toolchain = "//hocon-toolchain:toolchain_type",
     )
 
 hocon_library = rule(
     implementation = _hocon_library_impl,
+    doc = """Compiles a hocon source to a flattened hocon config file.
+
+    This flattens the config, by merging with any included files as well as merging on top of an optional base config file.
+    It also checks that any lucidBag references are valid.
+    """,
     attrs = {
         "src": attr.label(
             doc = "The source file for the hocon library",
@@ -125,16 +147,6 @@ hocon_library = rule(
             Note that it may include comments and references that aren't actually valid JSON""",
             default = False,
         ),
-        "_hocon_compiler": attr.label(
-            executable = True,
-            cfg = "exec",
-            allow_files = True,
-            default = Label("//hocon-compiler"),
-        ),
     },
+    toolchains = ["//hocon-toolchain:toolchain_type"],
 )
-"""Compiles a hocon source to a flattened hocon config file.
-
-This flattens the config, by merging with any included files as well as merging on top of an optional base config file.
-It also check that any lucidBag references are valid.
-"""

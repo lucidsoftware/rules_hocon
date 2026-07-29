@@ -1,0 +1,11 @@
+load("//hocon-toolchain:create-toolchain.bzl", "create_hocon_toolchain")
+load(":jvm-flags-test.bzl", "hocon_jvm_flags_test_suite")
+
+# Test-only toolchain for testing jvm_flags propagation.
+create_hocon_toolchain(
+    name = "hocon-jvm-flags",
+    hocon_compiler = "//hocon-compiler-cli:hocon-compiler-cli-3",
+    jvm_flags = ["-Drules_hocon.test=1"],
+)
+
+hocon_jvm_flags_test_suite(name = "jvm-flags-test")
